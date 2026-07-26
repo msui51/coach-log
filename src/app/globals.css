@@ -31,7 +31,7 @@ button {
 
 .header-preview {
   min-height: 101vh;
-  padding: 20px 14px 0;
+  padding: 20px 14px 104px;
   color: #f4f7fa;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
@@ -96,14 +96,80 @@ button {
 }
 
 .brand:focus-visible,
-.avatar:focus-visible {
+.avatar:focus-visible,
+.nav-item:focus-visible,
+.nav-fab:focus-visible {
   outline: 2px solid #31d7f4;
   outline-offset: 3px;
 }
 
+.bottom-nav {
+  position: fixed;
+  z-index: 30;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 82px;
+  border-top: 1px solid #26384f;
+  background: #071525;
+  color: #f4f7fa;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.nav-item {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 4px 2px;
+  place-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: #71839d;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 13.5px;
+  text-decoration: none;
+}
+
+.nav-item.selected {
+  color: #c7ff3d;
+}
+
+.nav-icon {
+  display: block;
+  width: 21px;
+  height: 21px;
+  stroke-width: 1.7;
+}
+
+.nav-fab {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #c7ff3d;
+  color: #07111f;
+  text-decoration: none;
+}
+
+.nav-fab span {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+}
+
 @media (min-width: 400px) {
   .header-preview {
-    padding: 23px 24px 0;
+    padding: 23px 24px 104px;
   }
 
   .mobile-head {
@@ -123,5 +189,9 @@ button {
   .avatar {
     width: 40px;
     height: 40px;
+  }
+
+  .bottom-nav {
+    height: 78px;
   }
 }
