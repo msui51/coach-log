@@ -7,7 +7,7 @@ type IconProps = {
   className?: string;
 };
 
-function OverviewIcon({ className }: IconProps) {
+export function OverviewIcon({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +28,7 @@ function OverviewIcon({ className }: IconProps) {
   );
 }
 
-function ClientsIcon({ className }: IconProps) {
+export function ClientsIcon({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@ function ClientsIcon({ className }: IconProps) {
   );
 }
 
-function SessionsIcon({ className }: IconProps) {
+export function SessionsIcon({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ function SessionsIcon({ className }: IconProps) {
   );
 }
 
-function ProgressIcon({ className }: IconProps) {
+export function ProgressIcon({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
