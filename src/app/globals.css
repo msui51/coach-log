@@ -29,8 +29,10 @@ button {
   font: inherit;
 }
 
-.header-preview {
-  min-height: 101vh;
+.page-layout {
+  width: auto;
+  max-width: 1600px;
+  min-height: 100vh;
   padding: 20px 14px 104px;
   color: #f4f7fa;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -168,7 +170,7 @@ button {
 }
 
 @media (min-width: 400px) {
-  .header-preview {
+  .page-layout {
     padding: 23px 24px 104px;
   }
 
@@ -193,5 +195,35 @@ button {
 
   .bottom-nav {
     height: 78px;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-layout {
+    padding: 34px 32px 132px;
+  }
+
+  .mobile-head {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 992px) {
+  .page-layout {
+    margin-left: 248px;
+    padding: 42px 40px 88px;
+  }
+
+  .mobile-head,
+  .bottom-nav {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-layout {
+    max-width: 1680px;
+    margin-left: 264px;
+    padding: 48px 56px 96px;
   }
 }
