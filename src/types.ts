@@ -1,3 +1,5 @@
+export type AttendanceStatus = "consistent" | "needs-attention" | "inactive";
+
 export interface Client {
   id: string;
   name: string;
