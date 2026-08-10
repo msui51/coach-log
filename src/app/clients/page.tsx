@@ -1,7 +1,11 @@
 import { ClientCard } from "@/components/client-card";
 import { demoClients } from "@/data/demo-clients";
+import { createDemoSessions } from "@/data/demo-sessions";
+import { getMostRecentSessionDate } from "@/session-utils";
 
 export default function Clients() {
+  const sessions = createDemoSessions();
+
   return (
     <section
       className="mt-7 w-full min-[400px]:mt-[34px]"
@@ -21,7 +25,15 @@ export default function Clients() {
 
       <div className="mt-5 grid gap-3 min-[400px]:mt-6 min-[400px]:gap-[14px]">
         {demoClients.map((client) => (
-          <ClientCard key={client.id} name={client.name} goal={client.goal} />
+          <ClientCard
+            key={client.id}
+            name={client.name}
+            goal={client.goal}
+            mostRecentSessionDate={getMostRecentSessionDate(
+              client.id,
+              sessions,
+            )}
+          />
         ))}
       </div>
     </section>
