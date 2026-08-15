@@ -14,6 +14,8 @@ type ClientListProps = {
 export function ClientList({ demoClients, demoSessions }: ClientListProps) {
   const [clients, setClients] = useState<Client[]>([]);
   const [isClientFormVisible, setIsClientFormVisible] = useState(false);
+  const [clientName, setClientName] = useState("");
+  const [clientGoal, setClientGoal] = useState("");
 
   if (clients.length === 0) {
     if (isClientFormVisible) {
@@ -56,6 +58,8 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
                   id="client-name"
                   name="name"
                   type="text"
+                  value={clientName}
+                  onChange={(event) => setClientName(event.target.value)}
                   placeholder="Enter client name"
                   className="h-12 rounded-xl border border-border bg-background px-4 text-base text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 />
@@ -70,6 +74,8 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
                   id="client-goal"
                   name="goal"
                   rows={4}
+                  value={clientGoal}
+                  onChange={(event) => setClientGoal(event.target.value)}
                   placeholder="Enter client goal"
                   className="min-h-28 resize-y rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 />
