@@ -1,5 +1,6 @@
 "use client";
 
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClientCard } from "@/components/client-card";
@@ -16,6 +17,32 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
   const [isClientFormVisible, setIsClientFormVisible] = useState(false);
   const [clientName, setClientName] = useState("");
   const [clientGoal, setClientGoal] = useState("");
+
+  function handleAddClient(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const trimmedName = clientName.trim();
+    const trimmedGoal = clientGoal.trim();
+
+    if (!trimmedName || !trimmedGoal) {
+      return;
+    }
+
+    const createdAt = new Date().toISOString();
+
+    setClients((currentClients) => [
+      {
+        id: `client-${createdAt}`,
+        name: trimmedName,
+        goal: trimmedGoal,
+        createdAt,
+      },
+      ...currentClients,
+    ]);
+    setClientName("");
+    setClientGoal("");
+    setIsClientFormVisible(false);
+  }
 
   if (clients.length === 0) {
     if (isClientFormVisible) {
@@ -47,7 +74,11 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
             </button>
           </div>
 
-          <form className="mt-7 w-full text-left" aria-label="Add a client">
+          <form
+            className="mt-7 w-full text-left"
+            aria-label="Add a client"
+            onSubmit={handleAddClient}
+          >
             <div className="grid gap-4">
               <label
                 className="grid gap-2 text-sm font-semibold text-foreground"
