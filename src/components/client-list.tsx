@@ -17,6 +17,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
   const [isClientFormVisible, setIsClientFormVisible] = useState(false);
   const [clientName, setClientName] = useState("");
   const [clientGoal, setClientGoal] = useState("");
+  const [clientNameError, setClientNameError] = useState("");
 
   function handleAddClient(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,9 +25,12 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
     const trimmedName = clientName.trim();
     const trimmedGoal = clientGoal.trim();
 
-    if (!trimmedName || !trimmedGoal) {
+    if (!trimmedName) {
+      setClientNameError("Client name is required.");
       return;
     }
+
+    setClientNameError("");
 
     const createdAt = new Date().toISOString();
 
@@ -77,6 +81,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
           <form
             className="mt-7 w-full text-left"
             aria-label="Add a client"
+            noValidate
             onSubmit={handleAddClient}
           >
             <div className="grid gap-4">
@@ -90,10 +95,28 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
                   name="name"
                   type="text"
                   value={clientName}
-                  onChange={(event) => setClientName(event.target.value)}
+                  onChange={(event) => {
+                    const nextName = event.target.value;
+
+                    setClientName(nextName);
+
+                    if (nextName.trim()) {
+                      setClientNameError("");
+                    }
+                  }}
                   placeholder="Enter client name"
+                  aria-describedby={clientNameError ? "client-name-error" : undefined}
+                  aria-invalid={clientNameError ? "true" : "false"}
                   className="h-12 rounded-xl border border-border bg-background px-4 text-base text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 />
+                {clientNameError ? (
+                  <span
+                    id="client-name-error"
+                    className="text-sm font-medium text-[color:var(--color-danger,#b42318)]"
+                  >
+                    {clientNameError}
+                  </span>
+                ) : null}
               </label>
 
               <label
