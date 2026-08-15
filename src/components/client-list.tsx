@@ -18,6 +18,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
   const [clientName, setClientName] = useState("");
   const [clientGoal, setClientGoal] = useState("");
   const [clientNameError, setClientNameError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   function handleAddClient(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,6 +28,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
 
     if (!trimmedName) {
       setClientNameError("Client name is required.");
+      setSuccessMessage("");
       return;
     }
 
@@ -45,6 +47,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
     ]);
     setClientName("");
     setClientGoal("");
+    setSuccessMessage(`${trimmedName} was added to your client list.`);
     setIsClientFormVisible(false);
   }
 
@@ -166,7 +169,10 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
           <Button
             fullWidth
             variant="secondary"
-            onClick={() => setClients([...demoClients])}
+            onClick={() => {
+              setClients([...demoClients]);
+              setSuccessMessage("");
+            }}
           >
             Load fictional demo data
           </Button>
@@ -177,6 +183,15 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
 
   return (
     <div className="mt-5 grid gap-3 min-[400px]:mt-6 min-[400px]:gap-[14px]">
+      {successMessage ? (
+        <p
+          className="rounded-2xl border border-accent/20 bg-accent/10 px-4 py-3 text-sm font-medium text-foreground"
+          role="status"
+        >
+          {successMessage}
+        </p>
+      ) : null}
+
       {clients.map((client) => (
         <ClientCard
           key={client.id}
