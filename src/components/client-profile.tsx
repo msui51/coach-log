@@ -76,9 +76,14 @@ export function ClientProfile({ id }: ClientProfileProps) {
           <p className="m-0 text-[11px] leading-[1.4] font-extrabold tracking-[0.13em] text-accent-cyan">
             CLIENT PROFILE
           </p>
-          <h1 className="mt-1 text-[30px] leading-[1.15] font-bold tracking-[-0.035em] text-foreground min-[400px]:text-[34px]">
-            {client.name}
-          </h1>
+          <div className="mt-1 flex items-center gap-3">
+            <h1 className="text-[30px] leading-[1.15] font-bold tracking-[-0.035em] text-foreground min-[400px]:text-[34px]">
+              {client.name}
+            </h1>
+            <span className="shrink-0 rounded-full border border-border/70 bg-surface/80 px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] text-muted min-[400px]:text-[11px]">
+              Status
+            </span>
+          </div>
           <p className="mt-3 mb-0 flex items-center gap-2 text-base leading-[1.5] text-muted">
             <span
               className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-muted/60"
