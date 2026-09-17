@@ -1,3 +1,5 @@
+import { ClientProfile } from "@/components/client-profile";
+
 export default async function Client({
   params,
 }: {
@@ -5,10 +7,5 @@ export default async function Client({
 }) {
   const { id } = await params;
 
-  return (
-    <main>
-      <h1>Client profile</h1>
-      <p>Client ID: {id}</p>
-    </main>
-  );
+  return <ClientProfile id={id} />;
 }
