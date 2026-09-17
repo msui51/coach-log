@@ -1,10 +1,12 @@
 import { ClientCard } from "@/components/client-card";
+import { getAvatarGradients } from "@/avatar-utils";
 import { demoClients } from "@/data/demo-clients";
 import { createDemoSessions } from "@/data/demo-sessions";
 import { getMostRecentSessionDate } from "@/session-utils";
 
 export default function Clients() {
   const sessions = createDemoSessions();
+  const avatarGradients = getAvatarGradients(demoClients);
 
   return (
     <section
@@ -30,6 +32,7 @@ export default function Clients() {
             id={client.id}
             name={client.name}
             goal={client.goal}
+            avatarGradient={avatarGradients.get(client.id) ?? ""}
             mostRecentSessionDate={getMostRecentSessionDate(
               client.id,
               sessions,

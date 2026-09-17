@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { getInitials } from "@/avatar-utils";
 import type { Client } from "@/types";
 
 type ClientCardProps = Pick<Client, "id" | "name" | "goal"> & {
+  avatarGradient: string;
   mostRecentSessionDate: string | null;
 };
 
@@ -16,6 +18,7 @@ export function ClientCard({
   id,
   name,
   goal,
+  avatarGradient,
   mostRecentSessionDate,
 }: ClientCardProps) {
   const sessionDate = mostRecentSessionDate
@@ -28,9 +31,17 @@ export function ClientCard({
       className="relative block overflow-hidden rounded-[14px] border border-border bg-linear-to-br from-surface-light to-surface px-[18px] pt-[17px] pb-[18px] shadow-[0_10px_28px_rgb(0_0_0/16%)] transition hover:border-accent/40 before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-accent before:content-[''] min-[400px]:rounded-2xl min-[400px]:px-[22px] min-[400px]:pt-5 min-[400px]:pb-[21px]"
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 className="m-0 text-lg leading-[1.3] font-bold tracking-[-0.02em] text-foreground min-[400px]:text-xl">
-          {name}
-        </h2>
+        <div className="flex items-center gap-3">
+          <div
+            className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${avatarGradient} text-sm font-bold text-white min-[400px]:size-11`}
+            aria-hidden="true"
+          >
+            {getInitials(name)}
+          </div>
+          <h2 className="m-0 text-lg leading-[1.3] font-bold tracking-[-0.02em] text-foreground min-[400px]:text-xl">
+            {name}
+          </h2>
+        </div>
         <span className="shrink-0 rounded-full border border-border/70 bg-surface/80 px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] text-muted min-[400px]:text-[11px]">
           Status
         </span>
