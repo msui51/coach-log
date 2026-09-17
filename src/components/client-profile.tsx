@@ -19,13 +19,55 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
+const avatarGradients = [
+  "from-accent-cyan to-[#1c6fd6]",
+  "from-[#ff7ab8] to-[#c2367f]",
+  "from-[#ffb84d] to-[#e0632c]",
+  "from-accent to-[#4f9d1f]",
+  "from-[#b18cff] to-[#5b3fc9]",
+  "from-[#5eead4] to-[#0f766e]",
+  "from-[#fca5a5] to-[#b91c1c]",
+  "from-[#fde047] to-[#a16207]",
+];
+
+function hashClientId(id: string): number {
+  return [...id].reduce(
+    (total, char) => (total * 31 + char.charCodeAt(0)) >>> 0,
+    0,
+  );
+}
+
+/** Assigns each client a gradient, resolving hash collisions so clients stay visually distinct. */
+function getAvatarGradients(clients: readonly Client[]): Map<string, string> {
+  const sortedClients = [...clients].sort((a, b) => a.id.localeCompare(b.id));
+  const usedIndexes = new Set<number>();
+  const gradients = new Map<string, string>();
+
+  for (const candidate of sortedClients) {
+    let index = hashClientId(candidate.id) % avatarGradients.length;
+    while (usedIndexes.has(index) && usedIndexes.size < avatarGradients.length) {
+      index = (index + 1) % avatarGradients.length;
+    }
+    usedIndexes.add(index);
+    gradients.set(candidate.id, avatarGradients[index]);
+  }
+
+  return gradients;
+}
+
 export function ClientProfile({ id }: ClientProfileProps) {
   const [client, setClient] = useState<Client | null>(null);
+  const [avatarGradient, setAvatarGradient] = useState(avatarGradients[0]);
   const [isStorageReady, setIsStorageReady] = useState(false);
 
   useEffect(() => {
     const clients = loadClients();
-    setClient(clients.find((candidate) => candidate.id === id) ?? null);
+    const matchedClient = clients.find((candidate) => candidate.id === id) ?? null;
+
+    setClient(matchedClient);
+    if (matchedClient) {
+      setAvatarGradient(getAvatarGradients(clients).get(matchedClient.id) ?? avatarGradients[0]);
+    }
     setIsStorageReady(true);
   }, [id]);
 
@@ -69,7 +111,7 @@ export function ClientProfile({ id }: ClientProfileProps) {
 
       <div className="mt-8 flex items-start gap-5">
         <div
-          className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-accent-cyan to-[#1c6fd6] text-xl font-bold text-white min-[400px]:size-20 min-[400px]:text-2xl"
+          className={`flex size-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br ${avatarGradient} text-xl font-bold text-white min-[400px]:size-20 min-[400px]:text-2xl`}
           aria-hidden="true"
         >
           {getInitials(client.name)}
