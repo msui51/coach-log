@@ -36,7 +36,9 @@ export function addClient(client: Client): Client[] {
     return [];
   }
 
-  return [];
+  const clients = [client, ...loadClients()];
+  saveClients(clients);
+  return clients;
 }
 
 /** Seeds localStorage with demo client data if none is present yet. */
@@ -45,5 +47,6 @@ export function loadDemoData(): Client[] {
     return demoClients;
   }
 
+  saveClients(demoClients);
   return demoClients;
 }

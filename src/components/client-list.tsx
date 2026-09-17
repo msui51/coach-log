@@ -1,24 +1,30 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClientCard } from "@/components/client-card";
+import { addClient, loadClients, loadDemoData } from "@/client-storage";
 import { getMostRecentSessionDate } from "@/session-utils";
 import type { Client, Session } from "@/types";
 
 type ClientListProps = {
-  demoClients: readonly Client[];
   demoSessions: readonly Session[];
 };
 
-export function ClientList({ demoClients, demoSessions }: ClientListProps) {
+export function ClientList({ demoSessions }: ClientListProps) {
   const [clients, setClients] = useState<Client[]>([]);
+  const [isStorageReady, setIsStorageReady] = useState(false);
   const [isClientFormVisible, setIsClientFormVisible] = useState(false);
   const [clientName, setClientName] = useState("");
   const [clientGoal, setClientGoal] = useState("");
   const [clientNameError, setClientNameError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    setClients(loadClients());
+    setIsStorageReady(true);
+  }, []);
 
   function handleAddClient(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,19 +42,30 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
 
     const createdAt = new Date().toISOString();
 
-    setClients((currentClients) => [
-      {
+    setClients(
+      addClient({
         id: `client-${createdAt}`,
         name: trimmedName,
         goal: trimmedGoal,
         createdAt,
-      },
-      ...currentClients,
-    ]);
+      }),
+    );
     setClientName("");
     setClientGoal("");
     setSuccessMessage(`${trimmedName} was added to your client list.`);
     setIsClientFormVisible(false);
+  }
+
+  if (!isStorageReady) {
+    return (
+      <div
+        className="mx-auto mt-12 max-w-md rounded-2xl border border-border bg-surface px-6 py-10 text-center shadow-[0_10px_28px_rgb(0_0_0/12%)] min-[400px]:mt-16 min-[400px]:px-9 min-[400px]:py-12"
+        role="status"
+        aria-live="polite"
+      >
+        <p className="text-sm font-semibold text-muted">Loading clients…</p>
+      </div>
+    );
   }
 
   if (clients.length === 0) {
@@ -170,7 +187,7 @@ export function ClientList({ demoClients, demoSessions }: ClientListProps) {
             fullWidth
             variant="secondary"
             onClick={() => {
-              setClients([...demoClients]);
+              setClients(loadDemoData());
               setSuccessMessage("");
             }}
           >

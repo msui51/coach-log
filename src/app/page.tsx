@@ -1,6 +1,5 @@
 
 import { ClientList } from "@/components/client-list";
-import { demoClients } from "@/data/demo-clients";
 import { createDemoSessions } from "@/data/demo-sessions";
 
 export default function Home() {
@@ -23,7 +22,7 @@ export default function Home() {
         </h1>
       </div>
 
-      <ClientList demoClients={demoClients} demoSessions={sessions} />
+      <ClientList demoSessions={sessions} />
     </section>
   );
 }
