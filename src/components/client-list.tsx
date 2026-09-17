@@ -212,6 +212,7 @@ export function ClientList({ demoSessions }: ClientListProps) {
       {clients.map((client) => (
         <ClientCard
           key={client.id}
+          id={client.id}
           name={client.name}
           goal={client.goal}
           mostRecentSessionDate={getMostRecentSessionDate(

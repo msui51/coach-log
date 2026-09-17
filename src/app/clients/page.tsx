@@ -27,6 +27,7 @@ export default function Clients() {
         {demoClients.map((client) => (
           <ClientCard
             key={client.id}
+            id={client.id}
             name={client.name}
             goal={client.goal}
             mostRecentSessionDate={getMostRecentSessionDate(
