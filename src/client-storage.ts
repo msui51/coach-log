@@ -9,7 +9,16 @@ export function loadClients(): Client[] {
     return [];
   }
 
-  return [];
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(raw) as Client[];
+  } catch {
+    return [];
+  }
 }
 
 /** Persists the given client list to localStorage. */
@@ -17,6 +26,8 @@ export function saveClients(clients: readonly Client[]): void {
   if (typeof window === "undefined") {
     return;
   }
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
 }
 
 /** Appends a new client to the persisted list and saves it. */
