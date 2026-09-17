@@ -47,6 +47,11 @@ export function loadDemoData(): Client[] {
     return demoClients;
   }
 
+  const existingClients = loadClients();
+  if (existingClients.length > 0) {
+    return existingClients;
+  }
+
   saveClients(demoClients);
   return demoClients;
 }
