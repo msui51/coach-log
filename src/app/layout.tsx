@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { MobileHeader } from "@/components/mobile-header";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { DesktopSidebar } from "@/components/desktop-sidebar";
-import { Button } from "@/components/ui/button";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,7 +34,6 @@ export default function RootLayout({
         <DesktopSidebar />
         <main className="page-layout">
           <MobileHeader />
-          <Button>Add session</Button>
           {children}
         </main>
         <MobileNavigation />
