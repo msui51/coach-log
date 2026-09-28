@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClientCard } from "@/components/client-card";
 import { addClient, loadClients, loadDemoData } from "@/client-storage";
+import { getAvatarGradients } from "@/avatar-utils";
 import { getMostRecentSessionDate } from "@/session-utils";
 import type { Client, Session } from "@/types";
 
@@ -198,6 +199,8 @@ export function ClientList({ demoSessions }: ClientListProps) {
     );
   }
 
+  const clientAvatarGradients = getAvatarGradients(clients);
+
   return (
     <div className="mt-5 grid gap-3 min-[400px]:mt-6 min-[400px]:gap-[14px]">
       {successMessage ? (
@@ -212,8 +215,10 @@ export function ClientList({ demoSessions }: ClientListProps) {
       {clients.map((client) => (
         <ClientCard
           key={client.id}
+          id={client.id}
           name={client.name}
           goal={client.goal}
+          avatarGradient={clientAvatarGradients.get(client.id) ?? ""}
           mostRecentSessionDate={getMostRecentSessionDate(
             client.id,
             demoSessions,
