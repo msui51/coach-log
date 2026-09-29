@@ -61,13 +61,13 @@ export function loadClients(): Client[] {
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
-    return [];
+    return demoClients;
   }
 
   try {
     return JSON.parse(raw) as Client[];
   } catch {
-    return [];
+    return demoClients;
   }
 }
 

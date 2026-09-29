@@ -1,9 +1,10 @@
 
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
     addSession,
@@ -22,6 +23,8 @@ function getToday(): string {
 }
 
 export default function Sessions() {
+    const router = useRouter();
+    const saveDialogRef = useRef<HTMLDialogElement>(null);
     const clients = useSyncExternalStore(
         subscribeToClients,
         getClientsSnapshot,
@@ -40,6 +43,27 @@ export default function Sessions() {
         exercises: [{ name: "", sets: [{ weight: "", reps: "" }] }],
     });
     const [successMessage, setSuccessMessage] = useState("");
+    const [savedClient, setSavedClient] = useState<{ id: string; name: string } | null>(null);
+
+    useEffect(() => {
+        const dialog = saveDialogRef.current;
+        if (!savedClient || !dialog) {
+            return;
+        }
+
+        dialog.showModal();
+        const timeoutId = window.setTimeout(() => {
+            dialog.close();
+            router.push(`/clients/${encodeURIComponent(savedClient.id)}`);
+        }, 1200);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+            if (dialog.open) {
+                dialog.close();
+            }
+        };
+    }, [router, savedClient]);
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -110,7 +134,7 @@ export default function Sessions() {
             date: "",
             exercises: [{ name: "", sets: [{ weight: "", reps: "" }] }],
         });
-        setSuccessMessage(`Session saved for ${selectedClient.name}.`);
+        setSavedClient({ id: clientId, name: selectedClient.name });
     }
 
     if (clients === null) {
@@ -421,6 +445,19 @@ export default function Sessions() {
                     </p>
                 ) : null}
             </form>
+            <dialog
+                ref={saveDialogRef}
+                aria-labelledby="session-saved-heading"
+                aria-describedby="session-saved-description"
+                className="m-auto w-[min(100%-2rem,28rem)] rounded-lg border border-border bg-surface p-6 text-foreground shadow-2xl backdrop:bg-black/65"
+            >
+                <h2 id="session-saved-heading" className="m-0 text-lg font-bold">
+                    Session saved
+                </h2>
+                <p id="session-saved-description" className="mb-0 mt-2 text-sm text-muted">
+                    Returning to {savedClient?.name}&apos;s profile.
+                </p>
+            </dialog>
         </section>
     );
 }
