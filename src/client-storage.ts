@@ -1,5 +1,6 @@
 import type { Client, Session } from "@/types";
 import { demoClients } from "@/data/demo-clients";
+import { createDemoSessions } from "@/data/demo-sessions";
 
 const STORAGE_KEY = "coach-log:clients";
 const SESSION_STORAGE_KEY = "coach-log:sessions";
@@ -93,18 +94,43 @@ export function addClient(client: Client): Client[] {
 }
 
 /** Seeds localStorage with demo client data if none is present yet. */
-export function loadDemoData(): Client[] {
+export function loadDemoData(referenceDate = new Date()): Client[] {
   if (typeof window === "undefined") {
     return demoClients;
   }
 
-  const existingClients = loadClients();
-  if (existingClients.length > 0) {
+  let existingClients: Client[] = [];
+  const rawClients = window.localStorage.getItem(STORAGE_KEY);
+  if (rawClients) {
+    try {
+      existingClients = JSON.parse(rawClients) as Client[];
+    } catch {
+      existingClients = [];
+    }
+  }
+
+  const demoClientIds = new Set(demoClients.map((client) => client.id));
+  const includesDemoClient = existingClients.some((client) =>
+    demoClientIds.has(client.id),
+  );
+  if (existingClients.length > 0 && !includesDemoClient) {
     return existingClients;
   }
 
-  saveClients(demoClients);
-  return demoClients;
+  const clients = existingClients.length > 0 ? existingClients : demoClients;
+  if (existingClients.length === 0) {
+    saveClients(demoClients);
+  }
+
+  const demoSessions = createDemoSessions(referenceDate);
+  const demoSessionIds = new Set(demoSessions.map((session) => session.id));
+  const existingSessions = loadSessions();
+  const retainedSessions = existingSessions.filter(
+    (session) => !demoSessionIds.has(session.id),
+  );
+  saveSessions([...demoSessions, ...retainedSessions]);
+
+  return clients;
 }
 
 /** Reads the persisted session list from localStorage. */

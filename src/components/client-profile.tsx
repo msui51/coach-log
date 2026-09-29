@@ -4,15 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { loadClients, loadSessions } from "@/client-storage";
 import { avatarGradients, getAvatarGradients, getInitials } from "@/avatar-utils";
-import { getClientSessions } from "@/session-utils";
+import { getAttendanceStatus, getClientSessions } from "@/session-utils";
+import { SessionEntry } from "@/components/session-entry";
 import type { Client, Session } from "@/types";
-
-const sessionDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
 
 type ClientProfileProps = {
   id: string;
@@ -65,6 +59,8 @@ export function ClientProfile({ id }: ClientProfileProps) {
     );
   }
 
+  const attendanceStatus = getAttendanceStatus(sessions[0]?.date ?? null);
+
   return (
     <section className="mt-7 w-full min-[400px]:mt-[34px]">
       <Link
@@ -91,7 +87,9 @@ export function ClientProfile({ id }: ClientProfileProps) {
               {client.name}
             </h1>
             <span className="shrink-0 rounded-full border border-border/70 bg-surface/80 px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] text-muted min-[400px]:text-[11px]">
-              Status
+              {attendanceStatus === "needs-attention"
+                ? "Needs attention"
+                : attendanceStatus}
             </span>
           </div>
           <p className="mt-3 mb-0 flex items-center gap-2 text-base leading-[1.5] text-muted">
@@ -121,37 +119,7 @@ export function ClientProfile({ id }: ClientProfileProps) {
         ) : (
           <ol className="mt-3 divide-y divide-border">
             {sessions.map((session) => (
-              <li key={session.id} className="py-5 first:pt-2">
-                <time
-                  className="text-sm font-semibold text-accent-cyan"
-                  dateTime={session.date}
-                >
-                  {sessionDateFormatter.format(new Date(`${session.date}T00:00:00Z`))}
-                </time>
-                <div className="mt-3 grid gap-4">
-                  {session.exercises.map((exercise, exerciseIndex) => (
-                    <div key={`${exercise.name}-${exerciseIndex}`}>
-                      <h3 className="m-0 text-base font-semibold text-foreground">
-                        {exercise.name}
-                      </h3>
-                      {exercise.sets.length > 0 ? (
-                        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 p-0 text-sm text-muted">
-                          {exercise.sets.map((set, setIndex) => (
-                            <li key={setIndex} className="list-none">
-                              Set {setIndex + 1}: {set.weight} x {set.reps} reps
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-                {session.notes ? (
-                  <p className="mb-0 mt-3 text-sm leading-6 text-muted">
-                    {session.notes}
-                  </p>
-                ) : null}
-              </li>
+              <SessionEntry key={session.id} session={session} />
             ))}
           </ol>
         )}

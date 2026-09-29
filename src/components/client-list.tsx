@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClientCard } from "@/components/client-card";
-import { addClient, loadClients, loadDemoData, loadSessions } from "@/client-storage";
+import { addClient, loadDemoData, loadSessions } from "@/client-storage";
 import { getAvatarGradients } from "@/avatar-utils";
 import { getClientSessions } from "@/session-utils";
 import type { Client, Session } from "@/types";
@@ -20,7 +20,7 @@ export function ClientList() {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    setClients(loadClients());
+    setClients(loadDemoData());
     setSessions(loadSessions());
     setIsStorageReady(true);
   }, []);
@@ -187,6 +187,7 @@ export function ClientList() {
             variant="secondary"
             onClick={() => {
               setClients(loadDemoData());
+              setSessions(loadSessions());
               setSuccessMessage("");
             }}
           >
