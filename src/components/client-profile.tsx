@@ -2,9 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { loadClients } from "@/client-storage";
+import { loadClients, loadSessions } from "@/client-storage";
 import { avatarGradients, getAvatarGradients, getInitials } from "@/avatar-utils";
-import type { Client } from "@/types";
+import { getClientSessions } from "@/session-utils";
+import type { Client, Session } from "@/types";
+
+const sessionDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 type ClientProfileProps = {
   id: string;
@@ -12,6 +20,7 @@ type ClientProfileProps = {
 
 export function ClientProfile({ id }: ClientProfileProps) {
   const [client, setClient] = useState<Client | null>(null);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [avatarGradient, setAvatarGradient] = useState(avatarGradients[0]);
   const [isStorageReady, setIsStorageReady] = useState(false);
 
@@ -20,6 +29,7 @@ export function ClientProfile({ id }: ClientProfileProps) {
     const matchedClient = clients.find((candidate) => candidate.id === id) ?? null;
 
     setClient(matchedClient);
+    setSessions(getClientSessions(id, loadSessions()));
     if (matchedClient) {
       setAvatarGradient(getAvatarGradients(clients).get(matchedClient.id) ?? avatarGradients[0]);
     }
@@ -95,6 +105,57 @@ export function ClientProfile({ id }: ClientProfileProps) {
           </p>
         </div>
       </div>
+
+      <section className="mt-10 border-t border-border pt-7" aria-labelledby="session-history-heading">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 id="session-history-heading" className="m-0 text-xl font-bold text-foreground">
+            Session history
+          </h2>
+          <span className="text-sm text-muted">
+            {sessions.length} {sessions.length === 1 ? "session" : "sessions"}
+          </span>
+        </div>
+
+        {sessions.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">No sessions logged yet.</p>
+        ) : (
+          <ol className="mt-3 divide-y divide-border">
+            {sessions.map((session) => (
+              <li key={session.id} className="py-5 first:pt-2">
+                <time
+                  className="text-sm font-semibold text-accent-cyan"
+                  dateTime={session.date}
+                >
+                  {sessionDateFormatter.format(new Date(`${session.date}T00:00:00Z`))}
+                </time>
+                <div className="mt-3 grid gap-4">
+                  {session.exercises.map((exercise, exerciseIndex) => (
+                    <div key={`${exercise.name}-${exerciseIndex}`}>
+                      <h3 className="m-0 text-base font-semibold text-foreground">
+                        {exercise.name}
+                      </h3>
+                      {exercise.sets.length > 0 ? (
+                        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 p-0 text-sm text-muted">
+                          {exercise.sets.map((set, setIndex) => (
+                            <li key={setIndex} className="list-none">
+                              Set {setIndex + 1}: {set.weight} x {set.reps} reps
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+                {session.notes ? (
+                  <p className="mb-0 mt-3 text-sm leading-6 text-muted">
+                    {session.notes}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
     </section>
   );
 }

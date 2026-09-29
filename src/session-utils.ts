@@ -1,19 +1,17 @@
 import type { Client, Session } from "@/types";
 
+export function getClientSessions(
+  clientId: Client["id"],
+  sessions: readonly Session[],
+): Session[] {
+  return sessions
+    .filter((session) => session.clientId === clientId)
+    .sort((first, second) => second.date.localeCompare(first.date));
+}
+
 export function getMostRecentSessionDate(
   clientId: Client["id"],
   sessions: readonly Session[],
 ): string | null {
-  let mostRecentDate: string | null = null;
-
-  for (const session of sessions) {
-    if (
-      session.clientId === clientId &&
-      (mostRecentDate === null || session.date > mostRecentDate)
-    ) {
-      mostRecentDate = session.date;
-    }
-  }
-
-  return mostRecentDate;
+  return getClientSessions(clientId, sessions)[0]?.date ?? null;
 }

@@ -1,10 +1,7 @@
 
 import { ClientList } from "@/components/client-list";
-import { createDemoSessions } from "@/data/demo-sessions";
 
 export default function Home() {
-  const sessions = createDemoSessions();
-
   return (
     <section
       className="mt-7 w-full min-[400px]:mt-[34px]"
@@ -22,7 +19,7 @@ export default function Home() {
         </h1>
       </div>
 
-      <ClientList demoSessions={sessions} />
+      <ClientList />
     </section>
   );
 }
