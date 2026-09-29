@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getInitials } from "@/avatar-utils";
-import type { Client } from "@/types";
+import { getAttendanceStatus } from "@/session-utils";
+import type { AttendanceStatus, Client } from "@/types";
 
 type ClientCardProps = Pick<Client, "id" | "name" | "goal"> & {
   avatarGradient: string;
@@ -14,6 +15,12 @@ const sessionDateFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 
+const attendanceStatusStyles: Record<AttendanceStatus, string> = {
+  consistent: "border-accent/30 bg-accent/10 text-accent",
+  "needs-attention": "border-amber-400/30 bg-amber-400/10 text-amber-300",
+  inactive: "border-rose-400/30 bg-rose-400/10 text-rose-300",
+};
+
 export function ClientCard({
   id,
   name,
@@ -24,6 +31,7 @@ export function ClientCard({
   const sessionDate = mostRecentSessionDate
     ? sessionDateFormatter.format(new Date(`${mostRecentSessionDate}T00:00:00Z`))
     : null;
+  const attendanceStatus = getAttendanceStatus(mostRecentSessionDate);
 
   return (
     <Link
@@ -42,8 +50,10 @@ export function ClientCard({
             {name}
           </h2>
         </div>
-        <span className="shrink-0 rounded-full border border-border/70 bg-surface/80 px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] text-muted min-[400px]:text-[11px]">
-          Status
+        <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] min-[400px]:text-[11px] ${attendanceStatusStyles[attendanceStatus]}`}>
+          {attendanceStatus === "needs-attention"
+            ? "Needs attention"
+            : attendanceStatus}
         </span>
       </div>
       <p className="mt-[7px] mb-0 text-sm leading-[1.5] text-muted min-[400px]:mt-2 min-[400px]:max-w-[42ch] min-[400px]:text-[15px]">

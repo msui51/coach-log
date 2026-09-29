@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { loadClients } from "@/client-storage";
+import { loadClients, loadSessions } from "@/client-storage";
 import { avatarGradients, getAvatarGradients, getInitials } from "@/avatar-utils";
-import type { Client } from "@/types";
+import { getAttendanceStatus, getClientSessions } from "@/session-utils";
+import { SessionEntry } from "@/components/session-entry";
+import type { Client, Session } from "@/types";
 
 type ClientProfileProps = {
   id: string;
@@ -12,6 +14,7 @@ type ClientProfileProps = {
 
 export function ClientProfile({ id }: ClientProfileProps) {
   const [client, setClient] = useState<Client | null>(null);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [avatarGradient, setAvatarGradient] = useState(avatarGradients[0]);
   const [isStorageReady, setIsStorageReady] = useState(false);
 
@@ -20,6 +23,7 @@ export function ClientProfile({ id }: ClientProfileProps) {
     const matchedClient = clients.find((candidate) => candidate.id === id) ?? null;
 
     setClient(matchedClient);
+    setSessions(getClientSessions(id, loadSessions()));
     if (matchedClient) {
       setAvatarGradient(getAvatarGradients(clients).get(matchedClient.id) ?? avatarGradients[0]);
     }
@@ -55,6 +59,8 @@ export function ClientProfile({ id }: ClientProfileProps) {
     );
   }
 
+  const attendanceStatus = getAttendanceStatus(sessions[0]?.date ?? null);
+
   return (
     <section className="mt-7 w-full min-[400px]:mt-[34px]">
       <Link
@@ -81,7 +87,9 @@ export function ClientProfile({ id }: ClientProfileProps) {
               {client.name}
             </h1>
             <span className="shrink-0 rounded-full border border-border/70 bg-surface/80 px-2.5 py-1 text-[10px] leading-none font-bold uppercase tracking-[0.18em] text-muted min-[400px]:text-[11px]">
-              Status
+              {attendanceStatus === "needs-attention"
+                ? "Needs attention"
+                : attendanceStatus}
             </span>
           </div>
           <p className="mt-3 mb-0 flex items-center gap-2 text-base leading-[1.5] text-muted">
@@ -95,6 +103,27 @@ export function ClientProfile({ id }: ClientProfileProps) {
           </p>
         </div>
       </div>
+
+      <section className="mt-10 border-t border-border pt-7" aria-labelledby="session-history-heading">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 id="session-history-heading" className="m-0 text-xl font-bold text-foreground">
+            Session history
+          </h2>
+          <span className="text-sm text-muted">
+            {sessions.length} {sessions.length === 1 ? "session" : "sessions"}
+          </span>
+        </div>
+
+        {sessions.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">No sessions logged yet.</p>
+        ) : (
+          <ol className="mt-3 divide-y divide-border">
+            {sessions.map((session) => (
+              <SessionEntry key={session.id} session={session} />
+            ))}
+          </ol>
+        )}
+      </section>
     </section>
   );
 }

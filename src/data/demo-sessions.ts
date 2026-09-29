@@ -1,96 +1,152 @@
 import type { Session } from "@/types";
 
-type DemoSessionTemplate = Omit<Session, "date" | "exercises"> & {
-  daysAgo: number;
+type DemoWorkoutTemplate = {
   activities: string[];
+  notes: string;
 };
 
-const demoSessionTemplates: DemoSessionTemplate[] = [
+type DemoClientPlan = {
+  clientId: string;
+  idPrefix: string;
+  daysAgo: number[];
+  workouts: DemoWorkoutTemplate[];
+};
+
+const demoClientPlans: DemoClientPlan[] = [
   {
-    id: "demo-session-maya-01",
     clientId: "demo-client-maya-thompson",
-    daysAgo: 16,
-    activities: ["Goblet squats", "Dumbbell bench press", "Farmer carries"],
-    notes: "Focused on a steady tempo and confident setup with each exercise.",
+    idPrefix: "demo-session-maya",
+    daysAgo: [2, 8, 15, 22, 29, 36, 43, 50],
+    workouts: [
+      {
+        activities: ["Goblet squats", "Dumbbell bench press", "Farmer carries"],
+        notes: "Focused on tempo and confident setup; all sets stayed controlled.",
+      },
+      {
+        activities: ["Romanian deadlifts", "One-arm rows", "Split squats"],
+        notes: "Added load to the hinge while keeping a steady range of motion.",
+      },
+      {
+        activities: ["Trap-bar deadlifts", "Incline dumbbell press", "Sled pushes"],
+        notes: "Strong technique through the final working sets.",
+      },
+    ],
   },
   {
-    id: "demo-session-maya-02",
-    clientId: "demo-client-maya-thompson",
-    daysAgo: 9,
-    activities: ["Romanian deadlifts", "One-arm rows", "Split squats"],
-    notes: "Added a small amount of weight while maintaining good control.",
-  },
-  {
-    id: "demo-session-maya-03",
-    clientId: "demo-client-maya-thompson",
-    daysAgo: 2,
-    activities: ["Trap-bar deadlifts", "Incline dumbbell press", "Sled pushes"],
-    notes: "Moved well and finished all working sets with strong technique.",
-  },
-  {
-    id: "demo-session-daniel-01",
     clientId: "demo-client-daniel-kim",
-    daysAgo: 26,
-    activities: ["Hip mobility flow", "Step-ups", "Calf raises"],
-    notes: "Kept the session low impact and emphasized ankle range of motion.",
+    idPrefix: "demo-session-daniel",
+    daysAgo: [5, 13, 21, 29, 37, 45],
+    workouts: [
+      {
+        activities: ["Hip mobility flow", "Step-ups", "Calf raises"],
+        notes: "Kept the session low impact and emphasized ankle range of motion.",
+      },
+      {
+        activities: ["Single-leg deadlifts", "Lateral lunges", "Pallof press"],
+        notes: "Balance improved after slowing down the single-leg work.",
+      },
+      {
+        activities: ["Dynamic warm-up", "Rear-foot elevated split squats", "Side planks"],
+        notes: "No discomfort; discussed an easy return-to-run session.",
+      },
+    ],
   },
   {
-    id: "demo-session-daniel-02",
-    clientId: "demo-client-daniel-kim",
-    daysAgo: 19,
-    activities: ["Single-leg deadlifts", "Lateral lunges", "Pallof press"],
-    notes: "Balance improved after slowing down the single-leg work.",
-  },
-  {
-    id: "demo-session-daniel-03",
-    clientId: "demo-client-daniel-kim",
-    daysAgo: 12,
-    activities: ["Dynamic warm-up", "Rear-foot elevated split squats", "Side planks"],
-    notes: "No discomfort during training; discussed an easy return-to-run session.",
-  },
-  {
-    id: "demo-session-priya-01",
     clientId: "demo-client-priya-patel",
-    daysAgo: 58,
-    activities: ["Box squats", "Cable rows", "Dead bugs"],
-    notes: "Established comfortable starting loads and a repeatable routine.",
+    idPrefix: "demo-session-priya",
+    daysAgo: [18, 27, 36, 45, 54, 63],
+    workouts: [
+      {
+        activities: ["Box squats", "Cable rows", "Dead bugs"],
+        notes: "Established comfortable loads and a repeatable routine.",
+      },
+      {
+        activities: ["Kettlebell deadlifts", "Half-kneeling press", "Bird dogs"],
+        notes: "Core control stayed steady through the final round.",
+      },
+      {
+        activities: ["Leg press", "Lat pulldowns", "Suitcase carries"],
+        notes: "Completed the full session after a busy week.",
+      },
+    ],
   },
   {
-    id: "demo-session-priya-02",
-    clientId: "demo-client-priya-patel",
-    daysAgo: 44,
-    activities: ["Kettlebell deadlifts", "Half-kneeling press", "Bird dogs"],
-    notes: "Core control was noticeably better during the final round.",
+    clientId: "demo-client-marcus-reed",
+    idPrefix: "demo-session-marcus",
+    daysAgo: [47, 56, 65, 74, 83, 92],
+    workouts: [
+      {
+        activities: ["Barbell bench press", "Inverted rows", "Assisted pull-ups"],
+        notes: "Built pulling volume and kept each bench rep controlled.",
+      },
+      {
+        activities: ["Dumbbell shoulder press", "Lat pulldowns", "Push-ups"],
+        notes: "Completed consistent sets across the upper-body circuit.",
+      },
+      {
+        activities: ["Close-grip bench press", "Cable rows", "Negative pull-ups"],
+        notes: "Focused on a slow lowering phase during pull-up practice.",
+      },
+    ],
   },
   {
-    id: "demo-session-priya-03",
-    clientId: "demo-client-priya-patel",
-    daysAgo: 30,
-    activities: ["Leg press", "Lat pulldowns", "Suitcase carries"],
-    notes: "Completed the full session after a busy week; follow-up is overdue.",
-  },
-  {
-    id: "demo-session-elena-01",
     clientId: "demo-client-elena-morales",
-    daysAgo: 23,
-    activities: ["Supported reverse lunges", "Cable pull-throughs", "Tandem balance"],
-    notes: "Worked on smooth weight shifts and a stable foot position.",
-  },
-  {
-    id: "demo-session-elena-02",
-    clientId: "demo-client-elena-morales",
-    daysAgo: 14,
-    activities: ["Step-downs", "Kettlebell squats", "Single-leg balance"],
-    notes: "Needed less support during balance work than in the previous session.",
-  },
-  {
-    id: "demo-session-elena-03",
-    clientId: "demo-client-elena-morales",
-    daysAgo: 5,
-    activities: ["Walking lunges", "Hip thrusts", "Loaded carries"],
-    notes: "Good pacing throughout and strong control on uneven-position drills.",
+    idPrefix: "demo-session-elena",
+    daysAgo: [7, 15, 23, 31, 39, 47],
+    workouts: [
+      {
+        activities: ["Supported reverse lunges", "Cable pull-throughs", "Tandem balance"],
+        notes: "Practiced smooth weight shifts and a stable foot position.",
+      },
+      {
+        activities: ["Step-downs", "Kettlebell squats", "Single-leg balance"],
+        notes: "Needed less support during balance work than in earlier sessions.",
+      },
+      {
+        activities: ["Walking lunges", "Hip thrusts", "Loaded carries"],
+        notes: "Good pacing and control through uneven-position drills.",
+      },
+    ],
   },
 ];
+
+function getExerciseProfile(name: string): { weight: number; reps: number } {
+  const activity = name.toLowerCase();
+
+  if (/mobility|warm-up|dead bugs|bird dogs|plank|balance|pallof|push-ups|pull-ups/.test(activity)) {
+    return { weight: 0, reps: 10 };
+  }
+  if (/deadlift|hip thrust|pull-through/.test(activity)) {
+    return { weight: 60, reps: 8 };
+  }
+  if (/bench|press/.test(activity)) {
+    return { weight: 30, reps: 10 };
+  }
+  if (/row|pulldown/.test(activity)) {
+    return { weight: 35, reps: 10 };
+  }
+  if (/squat|lunge|step-up|step-down|leg press/.test(activity)) {
+    return { weight: 40, reps: 10 };
+  }
+  if (/carry|carries|sled/.test(activity)) {
+    return { weight: 20, reps: 12 };
+  }
+
+  return { weight: 20, reps: 10 };
+}
+
+function createDemoExercise(name: string, sessionIndex: number) {
+  const profile = getExerciseProfile(name);
+  const weight = Math.max(0, profile.weight - Math.floor(sessionIndex / 3) * 2.5);
+
+  return {
+    name,
+    sets: [
+      { weight, reps: profile.reps },
+      { weight: weight === 0 ? 0 : weight + 2.5, reps: Math.max(6, profile.reps - 2) },
+    ],
+  };
+}
 
 function dateFromDaysAgo(referenceDate: Date, daysAgo: number): string {
   const date = new Date(referenceDate);
@@ -105,9 +161,19 @@ function dateFromDaysAgo(referenceDate: Date, daysAgo: number): string {
 }
 
 export function createDemoSessions(referenceDate = new Date()): Session[] {
-  return demoSessionTemplates.map(({ daysAgo, activities, ...session }) => ({
-    ...session,
-    date: dateFromDaysAgo(referenceDate, daysAgo),
-    exercises: activities.map((name) => ({ name, sets: [] })),
-  }));
+  return demoClientPlans.flatMap((plan) =>
+    plan.daysAgo.map((daysAgo, sessionIndex) => {
+      const workout = plan.workouts[sessionIndex % plan.workouts.length];
+
+      return {
+        id: `${plan.idPrefix}-${String(sessionIndex + 1).padStart(2, "0")}`,
+        clientId: plan.clientId,
+        date: dateFromDaysAgo(referenceDate, daysAgo),
+        exercises: workout.activities.map((activity) =>
+          createDemoExercise(activity, sessionIndex),
+        ),
+        notes: workout.notes,
+      };
+    }),
+  );
 }

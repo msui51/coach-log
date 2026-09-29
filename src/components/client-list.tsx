@@ -4,17 +4,14 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClientCard } from "@/components/client-card";
-import { addClient, loadClients, loadDemoData } from "@/client-storage";
+import { addClient, loadDemoData, loadSessions } from "@/client-storage";
 import { getAvatarGradients } from "@/avatar-utils";
-import { getMostRecentSessionDate } from "@/session-utils";
+import { getClientSessions } from "@/session-utils";
 import type { Client, Session } from "@/types";
 
-type ClientListProps = {
-  demoSessions: readonly Session[];
-};
-
-export function ClientList({ demoSessions }: ClientListProps) {
+export function ClientList() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [isStorageReady, setIsStorageReady] = useState(false);
   const [isClientFormVisible, setIsClientFormVisible] = useState(false);
   const [clientName, setClientName] = useState("");
@@ -23,7 +20,8 @@ export function ClientList({ demoSessions }: ClientListProps) {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    setClients(loadClients());
+    setClients(loadDemoData());
+    setSessions(loadSessions());
     setIsStorageReady(true);
   }, []);
 
@@ -189,6 +187,7 @@ export function ClientList({ demoSessions }: ClientListProps) {
             variant="secondary"
             onClick={() => {
               setClients(loadDemoData());
+              setSessions(loadSessions());
               setSuccessMessage("");
             }}
           >
@@ -212,19 +211,20 @@ export function ClientList({ demoSessions }: ClientListProps) {
         </p>
       ) : null}
 
-      {clients.map((client) => (
-        <ClientCard
-          key={client.id}
-          id={client.id}
-          name={client.name}
-          goal={client.goal}
-          avatarGradient={clientAvatarGradients.get(client.id) ?? ""}
-          mostRecentSessionDate={getMostRecentSessionDate(
-            client.id,
-            demoSessions,
-          )}
-        />
-      ))}
+      {clients.map((client) => {
+        const mostRecentSession = getClientSessions(client.id, sessions)[0];
+
+        return (
+          <ClientCard
+            key={client.id}
+            id={client.id}
+            name={client.name}
+            goal={client.goal}
+            avatarGradient={clientAvatarGradients.get(client.id) ?? ""}
+            mostRecentSessionDate={mostRecentSession?.date ?? null}
+          />
+        );
+      })}
     </div>
   );
 }
