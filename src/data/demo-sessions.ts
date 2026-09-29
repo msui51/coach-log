@@ -1,7 +1,8 @@
 import type { Session } from "@/types";
 
-type DemoSessionTemplate = Omit<Session, "date"> & {
+type DemoSessionTemplate = Omit<Session, "date" | "exercises"> & {
   daysAgo: number;
+  activities: string[];
 };
 
 const demoSessionTemplates: DemoSessionTemplate[] = [
@@ -104,8 +105,9 @@ function dateFromDaysAgo(referenceDate: Date, daysAgo: number): string {
 }
 
 export function createDemoSessions(referenceDate = new Date()): Session[] {
-  return demoSessionTemplates.map(({ daysAgo, ...session }) => ({
+  return demoSessionTemplates.map(({ daysAgo, activities, ...session }) => ({
     ...session,
     date: dateFromDaysAgo(referenceDate, daysAgo),
+    exercises: activities.map((name) => ({ name, sets: [] })),
   }));
 }

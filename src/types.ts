@@ -11,6 +11,16 @@ export interface Session {
   id: string;
   clientId: string;
   date: string;
-  activities: string[];
+  exercises: Exercise[];
   notes: string;
+}
+
+export interface Exercise {
+  name: string;
+  sets: SessionSet[];
+}
+
+export interface SessionSet {
+  weight: number;
+  reps: number;
 }
